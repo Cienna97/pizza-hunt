@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 const $addToppingBtn = document.querySelector('#add-topping');
 const $pizzaForm = document.querySelector('#pizza-form');
 const $customToppingsList = document.querySelector('#custom-toppings-list');
@@ -37,6 +39,23 @@ const handleAddTopping = event => {
 };
 
 const handlePizzaSubmit = event => {
+  fetch('/api/pizzas', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+    .then(response => response.json())
+    .then(postResponse => {
+      alert('Pizza created successfully!');
+      console.log(postResponse);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+    
   event.preventDefault();
 
   const pizzaName = $pizzaForm.querySelector('#pizza-name').value;
@@ -44,6 +63,7 @@ const handlePizzaSubmit = event => {
   const size = $pizzaForm.querySelector('#pizza-size').value;
   const toppings = [...$pizzaForm.querySelectorAll('[name=topping]:checked')].map(topping => {
     return topping.value;
+
   });
 
   if (!pizzaName || !createdBy || !toppings.length) {
